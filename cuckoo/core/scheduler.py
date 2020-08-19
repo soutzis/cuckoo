@@ -157,6 +157,7 @@ class AnalysisManager(threading.Thread):
 
         # Start a loop to acquire the a machine to run the analysis on.
         while True:
+            time.sleep(4)
             machine_lock.acquire()
 
             # In some cases it's possible that we enter this loop without
@@ -465,7 +466,8 @@ class AnalysisManager(threading.Thread):
             self.machine.name, self.machine.ip,
             self.machine.platform, self.task.id, self
         )
-
+        
+        time.sleep(3)
         self.aux = RunAuxiliary(self.task, self.machine, self.guest_manager)
         self.aux.start()
 
@@ -827,6 +829,7 @@ class AnalysisManager(threading.Thread):
 
         self.guest_manager.stop()
         log.debug("Force stopping task #%s", self.task.id)
+        time.sleep(3)
 
 class Scheduler(object):
     """Tasks Scheduler.
@@ -873,6 +876,7 @@ class Scheduler(object):
 
         # Initialize the machine manager.
         try:
+            time.sleep(3)
             machinery.initialize(machinery_name)
         except CuckooMachineError as e:
             raise CuckooCriticalError("Error initializing machines: %s" % e)
@@ -943,6 +947,7 @@ class Scheduler(object):
 
         # Shutdown machine manager (used to kill machines that still alive).
         machinery.shutdown()
+        time.sleep(4)
 
         # Remove network rules if any are present and stop auxiliary modules
         for am in self.analysis_managers:
@@ -967,6 +972,7 @@ class Scheduler(object):
 
     def start(self):
         """Start scheduler."""
+        time.sleep(2)
         self.initialize()
 
         log.info("Waiting for analysis tasks.")
@@ -980,7 +986,7 @@ class Scheduler(object):
 
         # This loop runs forever.
         while self.running:
-            time.sleep(1)
+            time.sleep(2)
 
             # Run cleanup on finished analysis managers and untrack them
             for am in self._cleanup_managers():
